@@ -1,7 +1,7 @@
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 // -------------- surveys -----------------
 const surveyTemplate = {
@@ -71,4 +71,5 @@ export const landGroup = new MapImageLayer({
     ],
 });
 
+export const taxlotLayer = landGroup.findSublayerById(1);
 // -------------- taxlots -----------------

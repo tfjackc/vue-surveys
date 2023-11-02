@@ -11,7 +11,27 @@
                                     <v-select label="Filter Search Criteria" :items="selection_criteria" variant="solo-filled"></v-select>
                                 </v-list-item>
                                 <v-list-item>
-                                    <v-text-field density="compact" flat hide-details label="Search" rounded="lg" single-line variant="solo-filled"></v-text-field>
+                                  <v-form v-model="form"
+                                      @submit.prevent="search_store.onSubmit()">
+                                    <v-text-field
+                                      v-model="searchedValue"
+                                      placeholder="Type in Searchable Value"
+                                      label="Search"
+                                      :rules="[required]"
+                                      clearable: boolean=""
+                                    ></v-text-field>
+                                    <v-btn
+                                      :disabled="!form"
+                                      :loading="loading"
+                                      block
+                                      color="success"
+                                      size="large"
+                                      type="submit"
+                                      variant="elevated">
+                                      Submit
+                                    </v-btn>
+                                  </v-form>
+
                                 </v-list-item>
                                 <v-list-item>
                                     <v-btn> SEARCH </v-btn>
@@ -31,8 +51,22 @@
 </template>
 <script lang="ts" setup>
 import MapComponent from "@/components/MapComponent.vue";
-import {
-    ref
-} from "vue";
-const selection_criteria = ref(['Survey Numbers', 'Partition Plats', 'Township/Ranges', 'Subdivisions', 'Prepared For', 'Prepared By'])
+import { ref } from "vue";
+import {useSearchStore} from "@/store/search";
+import {storeToRefs} from "pinia";
+const search_store = useSearchStore()
+const {form, loading, searchedValue, filteredData} = storeToRefs(search_store)
+//const submitFunc = search_store.onSubmit()
+const selection_criteria = ref([
+    'Survey Numbers',
+    'Partition Plats',
+    'Township/Ranges',
+    'Subdivisions',
+    'Prepared For',
+    'Prepared By'
+  ])
+
+function required (v: any) {
+  return !!v || 'Field is required'
+}
 </script>
