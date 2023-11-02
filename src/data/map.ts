@@ -1,8 +1,8 @@
-import ArcGISMap from '@arcgis/core/Map'
-import MapView from '@arcgis/core/views/MapView'
+import MapView from "@arcgis/core/views/MapView";
+import ArcGISMap from "@arcgis/core/Map";
 import Home from "@arcgis/core/widgets/Home";
-
 const BASEMAP = 'topo-vector'
+
 export async function initialize(container: HTMLDivElement) {
 
   const map = new ArcGISMap({
@@ -13,7 +13,7 @@ export async function initialize(container: HTMLDivElement) {
   const view = new MapView({
     map,
     container,
-    zoom: 12,
+    zoom: 10,
     center: [ -120.8345, 44.2998 ],
     popupEnabled: true,
     popup: {

@@ -25,12 +25,10 @@
           </v-col>
 
           <v-col>
-            <v-sheet
-              min-height="70vh"
-              rounded="lg"
-            >
-              <!--  -->
-            </v-sheet>
+
+             <MapComponent />
+
+
           </v-col>
         </v-row>
       </v-container>
@@ -39,18 +37,5 @@
 </template>
 
 <script lang="ts" setup>
-
+import MapComponent from "@/components/MapComponent.vue";
 </script>
-
-<!--<script>-->
-<!--// export default {-->
-<!--//   data: () => ({-->
-<!--//     links: [-->
-<!--//       'Dashboard',-->
-<!--//       'Messages',-->
-<!--//       'Profile',-->
-<!--//       'Updates',-->
-<!--//     ],-->
-<!--//   }),-->
-<!--// }-->
-<!--</script>-->
