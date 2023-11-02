@@ -1,6 +1,6 @@
 <template>
     <v-app id="inspire">
-        <v-main class="bg-grey-lighten-3">
+        <v-main class="bg-shades-dark-gray">
             <v-container>
                 <v-row>
                     <v-col cols="4">
@@ -33,10 +33,7 @@
                                   </v-form>
 
                                 </v-list-item>
-                                <v-list-item>
-                                    <v-btn> SEARCH </v-btn>
 
-                                </v-list-item>
                                 <v-divider class="my-2"></v-divider>
                             </v-list>
                         </v-sheet>

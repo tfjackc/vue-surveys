@@ -1,7 +1,7 @@
 // Utilities
 import { defineStore } from 'pinia'
 
-export const useSearchStore = defineStore('app', {
+export const useSearchStore = defineStore('search', {
   state: () => ({
     form: false as boolean,
     loading: false as boolean,

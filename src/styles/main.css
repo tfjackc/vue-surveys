@@ -5,6 +5,7 @@
     height: 100%;
     min-height: 70vh;
     border: 1px solid black;
+    margin-top: 7px;
 }
 .v-btn {
     width: 100%;
