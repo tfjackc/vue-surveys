@@ -49,8 +49,8 @@
 <script lang="ts" setup>
 import MapComponent from "@/components/MapComponent.vue";
 import { ref } from "vue";
-import {useSearchStore} from "@/store/search";
-import {storeToRefs} from "pinia";
+import { useSearchStore } from "@/store/search";
+import { storeToRefs } from "pinia";
 const search_store = useSearchStore()
 const {form, loading, searchedValue, filteredData} = storeToRefs(search_store)
 //const submitFunc = search_store.onSubmit()
