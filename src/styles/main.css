@@ -6,3 +6,6 @@
     min-height: 70vh;
     border: 1px solid black;
 }
+.v-btn {
+    width: 100%;
+}

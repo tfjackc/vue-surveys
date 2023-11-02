@@ -8,37 +8,18 @@
         ></v-img>
       </v-icon>
 
-      <v-btn
-        v-for="link in links"
-        :key="link"
-        :text="link"
-        variant="text"
-      ></v-btn>
+        <h2>Survey Research Tool</h2>
+
 
       <v-spacer></v-spacer>
 
       <v-responsive max-width="160">
-        <v-text-field
-          density="compact"
-          flat
-          hide-details
-          label="Search"
-          rounded="lg"
-          single-line
-          variant="solo-filled"
-        ></v-text-field>
+
       </v-responsive>
     </v-container>
   </v-app-bar>
 </template>
 
 <script lang="ts" setup>
-import {ref} from "vue";
 
-const links = ref([
-  'Dashboard',
-  'Messages',
-  'Profile',
-  'Updates',
-])
 </script>
