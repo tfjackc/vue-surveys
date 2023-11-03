@@ -1,5 +1,6 @@
 // Utilities
 import { defineStore } from 'pinia'
+import { keys } from "@/data/keys";
 
 export const useSearchStore = defineStore('search', {
   state: () => ({
@@ -17,6 +18,9 @@ export const useSearchStore = defineStore('search', {
     async onSubmit ()  {
       console.log("on submit ran")
       console.log(this.searchedValue)
+    },
+    async getSurveyData () {
+
     }
   }
 })

@@ -11,7 +11,8 @@ const surveyTemplate = {
 
 export const surveyLayer = new FeatureLayer ({
   url: "https://geo.co.crook.or.us/server/rest/services/surveyor/surveys/MapServer/0",
-  popupTemplate: surveyTemplate
+  popupTemplate: surveyTemplate,
+  outFields:["*"]
 });
 // -------------- surveys -----------------
 
