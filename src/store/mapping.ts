@@ -17,16 +17,17 @@ export const useMappingStore = defineStore('mapping_store', {
   state: () => ({
     featureAttributes: [] as any[],
     //featureSetData: [] as any[],
-    fields: [] as any[],
+    searchCount: 0 as number,
     form: false as boolean,
     loading: false as boolean,
     searchedValue: '' as string,
     filteredData: [] as any[],
     whereClause: '' as StringOrArray,
+    surveyLayerCheckbox: true
   }),
   getters: {
     getFeatures(state) {
-      return state.featureAttributes, state.fields, state.form, state.loading, state.searchedValue, state.filteredData, state.whereClause
+      return state.featureAttributes, state.searchCount, state.form, state.loading, state.searchedValue, state.filteredData, state.whereClause, state.surveyLayerCheckbox
     }
   },
   actions: {
@@ -80,7 +81,7 @@ export const useMappingStore = defineStore('mapping_store', {
       });
 
       this.whereClause = '';
-
+      this.searchCount = 0;
       // Create a Fuse instance with your data and search options
       const fuse = new Fuse(this.featureAttributes, {
         keys: keys, // Fields to search in
@@ -94,6 +95,7 @@ export const useMappingStore = defineStore('mapping_store', {
 
       // Build the WHERE clause with OR conditions
       searchResults.forEach((result, index) => {
+        this.searchCount += 1;
         const feature = result.item;
         if (index > 0) {
           this.whereClause += ' OR ';
@@ -119,7 +121,7 @@ export const useMappingStore = defineStore('mapping_store', {
             popupTemplate: surveyTemplate
           });
 
-          view.graphics.add(graphic);
+          view.graphics.push(graphic);
         });
 
         // Calculate the extent of all graphics
@@ -144,5 +146,13 @@ export const useMappingStore = defineStore('mapping_store', {
       this.queryLayer(surveyLayer);
       // You can now use searchResults for further processing, like adding features to the map or updating the UI.
     },
+
+    async surveyLayerCheck(e){
+      const isChecked = e.target.checked;
+      this.surveyLayerCheckbox = isChecked;
+      console.log(this.surveyLayerCheckbox);
+    }
+
+
   }
 });

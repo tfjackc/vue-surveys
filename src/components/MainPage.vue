@@ -31,10 +31,19 @@
                                       Submit
                                     </v-btn>
                                   </v-form>
-
                                 </v-list-item>
-
                                 <v-divider class="my-2"></v-divider>
+                              <v-list-item>
+                                <v-checkbox
+                                  :model-value="surveyLayerCheckbox"
+                                  label="Survey Layer"
+                                  @change="mapping_store.surveyLayerCheck($event)"
+                                ></v-checkbox>
+                                <v-checkbox
+                                  v-if="searchCount > 0"
+                                  label="Searched Layer"
+                                ></v-checkbox>
+                              </v-list-item>
                             </v-list>
                         </v-sheet>
                     </v-col>
@@ -53,7 +62,7 @@ import { useMappingStore } from "@/store/mapping";
 import { storeToRefs } from "pinia";
 
 const mapping_store = useMappingStore()
-const {form, loading, searchedValue} = storeToRefs(mapping_store)
+const { form, loading, searchedValue, searchCount, surveyLayerCheckbox } = storeToRefs(mapping_store)
 const selection_criteria = ref([
     'Survey Numbers',
     'Partition Plats',
@@ -65,4 +74,7 @@ const selection_criteria = ref([
 function required (v: any) {
   return !!v || 'Field is required'
 }
+
+
 </script>
+
