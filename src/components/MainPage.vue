@@ -53,7 +53,7 @@ import { useMappingStore } from "@/store/mapping";
 import { storeToRefs } from "pinia";
 
 const mapping_store = useMappingStore()
-const {form, loading, searchedValue, filteredData} = storeToRefs(mapping_store)
+const {form, loading, searchedValue} = storeToRefs(mapping_store)
 const selection_criteria = ref([
     'Survey Numbers',
     'Partition Plats',

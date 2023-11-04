@@ -3,6 +3,7 @@ import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Graphic from "@arcgis/core/Graphic";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 
 // -------------- surveys -----------------
 const surveyTemplate = {
@@ -86,4 +87,14 @@ export const bufferGraphic = new Graphic({
     }
   })
 });
+
+export const fillSymbol = {
+  type: "simple-fill", // autocasts as new SimpleFillSymbol()
+  color: [227, 139, 79, 0.8],
+  outline: {
+    // autocasts as new SimpleLineSymbol()
+    color: [255, 255, 255],
+    width: 1
+  }
+};
 // -------------- graphics -----------------

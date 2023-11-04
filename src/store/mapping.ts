@@ -7,7 +7,7 @@ import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
-import {bufferGraphic, surveyLayer} from "@/data/layers";
+import {bufferGraphic, surveyLayer, fillSymbol} from "@/data/layers";
 
 let view: MapView;
 let featureSetData: FeatureSet
@@ -106,24 +106,30 @@ export const useMappingStore = defineStore('mapping_store', {
     },
 
     async createGraphicLayer(fset: any) {
+
       if (fset && fset.features) {
 
         console.log(fset.features)
 
-        fset.features.forEach(function (surveys: any) {
-          bufferGraphic.geometry = surveys.geometry;
-          view.graphics.add(bufferGraphic);
+        fset.features.forEach(function (survey: any) {
+          const graphic = new Graphic({
+            geometry: survey.geometry,
+            attributes: survey.attributes,
+            symbol: fillSymbol
+          });
+
+          view.graphics.add(graphic);
         });
 
-        view.goTo(bufferGraphic.geometry.extent).then(() => {
-          console.log("going to searched surveys")
-          // view.openPopup({
-          //   location: pointGraphic.geometry,
-          //   features: fset.features,
-          //   featureMenuOpen: false,
-          //   fetchFeatures: true
-          // });
-        })
+        // Calculate the extent of all graphics
+        const graphicsExtent = fset.features.reduce((extent: any, survey: any) => {
+          extent.union(survey.geometry.extent);
+          return extent;
+        }, fset.features[0].geometry.extent);
+
+        view.goTo(graphicsExtent).then(() => {
+          console.log("going to searched surveys");
+        });
       } else {
         console.warn('No features found in the query result.');
       }
@@ -132,6 +138,7 @@ export const useMappingStore = defineStore('mapping_store', {
     async onSubmit() {
      // console.log(this.featureSetData)
       //console.log(this.searchedValue);
+      view.graphics.removeAll()
       this.displayResults()
       this.queryLayer(surveyLayer);
       // You can now use searchResults for further processing, like adding features to the map or updating the UI.
