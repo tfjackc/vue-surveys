@@ -3,19 +3,38 @@ import MapView from '@arcgis/core/views/MapView';
 import { initialize } from "@/data/map";
 import Fuse from "fuse.js"; // Import the specific function from ArcGIS API
 import { keys } from "@/data/keys";
+import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import Graphic from "@arcgis/core/Graphic";
+import Layer from "@arcgis/core/layers/Layer";
+import {bufferGraphic, surveyLayer} from "@/data/layers";
 
 let view: MapView;
+let featureSetData: FeatureSet
+type StringOrArray = string | string[];
+
 export const useMappingStore = defineStore('mapping_store', {
   state: () => ({
     featureAttributes: [] as any[],
-    fields: [] as any[]
+    //featureSetData: [] as any[],
+    fields: [] as any[],
+    form: false as boolean,
+    loading: false as boolean,
+    searchedValue: '' as string,
+    filteredData: [] as any[],
+    whereClause: '' as StringOrArray,
   }),
   getters: {
     getFeatures(state) {
-      return state.featureAttributes, state.fields
+      return state.featureAttributes, state.fields, state.form, state.loading, state.searchedValue, state.filteredData, state.whereClause
     }
   },
   actions: {
+    // async onSubmit ()  {
+    //   console.log("on submit ran")
+    //   console.log(this.searchedValue)
+    // },
+
     async createMap(mapContainer: HTMLDivElement) {
       if (mapContainer) {
         view = await initialize(mapContainer);
@@ -26,26 +45,41 @@ export const useMappingStore = defineStore('mapping_store', {
       if (view && layer) {
         view.map.add(layer);
       }
-      this.queryLayerView(layer);
+      this.whereClause = "1=1"
+      this.queryLayer(layer);
     },
 
-    async queryLayerView(layer: any) {
+    async queryLayer(layer: any) {
       const querySurveys = layer.createQuery();
       querySurveys.geometry = layer.geometry;
-      querySurveys.where = "1=1";
+      querySurveys.where = this.whereClause;
       querySurveys.outFields = ["*"];
       querySurveys.returnQueryGeometry = true;
       querySurveys.outSpatialReference = view.map.basemap.baseLayers.items[0].spatialReference;
-      return layer.queryFeatures(querySurveys).then((fset: any) => {
-        this.displayResults(fset);
-      });
+
+      try {
+        if (this.whereClause === "1=1") {
+          featureSetData = await layer.queryFeatures(querySurveys);
+        }
+        else {
+          view.map.remove(layer)
+          return layer.queryFeatures(querySurveys).then((fset: any) => {
+            this.createGraphicLayer(fset);
+          });
+        }
+      } catch (error) {
+        console.error("Error querying features:", error);
+      }
     },
 
-    async displayResults(fset: any) {
-      fset.features.forEach(feature => {
-        // console.log(feature.attributes)
+    async displayResults() {
+      // const fset = await this.featureSetData
+
+      featureSetData.features.forEach(feature => {
         this.featureAttributes.push(feature.attributes);
       });
+
+      this.whereClause = '';
 
       // Create a Fuse instance with your data and search options
       const fuse = new Fuse(this.featureAttributes, {
@@ -55,11 +89,52 @@ export const useMappingStore = defineStore('mapping_store', {
       });
 
       // Perform the search using Fuse.js
-      const query: any = '4666'; // Search query
+      const query = this.searchedValue; // Search query
       const searchResults = fuse.search(query);
 
-      // The searchResults variable now contains the matched items, including the matching fields and values
-      console.log(searchResults);
+      // Build the WHERE clause with OR conditions
+      searchResults.forEach((result, index) => {
+        const feature = result.item;
+        if (index > 0) {
+          this.whereClause += ' OR ';
+        }
+        this.whereClause += `OBJECTID = ${feature.OBJECTID}`;
+      });
+
+      // Log the generated WHERE clause for debugging
+      console.log('Generated WHERE clause:', this.whereClause);
+    },
+
+    async createGraphicLayer(fset: any) {
+      if (fset && fset.features) {
+
+        console.log(fset.features)
+
+        fset.features.forEach(function (surveys: any) {
+          bufferGraphic.geometry = surveys.geometry;
+          view.graphics.add(bufferGraphic);
+        });
+
+        view.goTo(bufferGraphic.geometry.extent).then(() => {
+          console.log("going to searched surveys")
+          // view.openPopup({
+          //   location: pointGraphic.geometry,
+          //   features: fset.features,
+          //   featureMenuOpen: false,
+          //   fetchFeatures: true
+          // });
+        })
+      } else {
+        console.warn('No features found in the query result.');
+      }
+    },
+
+    async onSubmit() {
+     // console.log(this.featureSetData)
+      //console.log(this.searchedValue);
+      this.displayResults()
+      this.queryLayer(surveyLayer);
+      // You can now use searchResults for further processing, like adding features to the map or updating the UI.
     },
   }
-})
+});

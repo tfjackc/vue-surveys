@@ -12,7 +12,7 @@
                                 </v-list-item>
                                 <v-list-item>
                                   <v-form v-model="form"
-                                      @submit.prevent="search_store.onSubmit()">
+                                      @submit.prevent="mapping_store.onSubmit()">
                                     <v-text-field
                                       v-model="searchedValue"
                                       placeholder="Type in Searchable Value"
@@ -49,11 +49,11 @@
 <script lang="ts" setup>
 import MapComponent from "@/components/MapComponent.vue";
 import { ref } from "vue";
-import { useSearchStore } from "@/store/search";
+import { useMappingStore } from "@/store/mapping";
 import { storeToRefs } from "pinia";
-const search_store = useSearchStore()
-const {form, loading, searchedValue, filteredData} = storeToRefs(search_store)
-//const submitFunc = search_store.onSubmit()
+
+const mapping_store = useMappingStore()
+const {form, loading, searchedValue, filteredData} = storeToRefs(mapping_store)
 const selection_criteria = ref([
     'Survey Numbers',
     'Partition Plats',
@@ -62,7 +62,6 @@ const selection_criteria = ref([
     'Prepared For',
     'Prepared By'
   ])
-
 function required (v: any) {
   return !!v || 'Field is required'
 }

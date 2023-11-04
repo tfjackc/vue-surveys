@@ -2,6 +2,7 @@ import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import Graphic from "@arcgis/core/Graphic";
 
 // -------------- surveys -----------------
 const surveyTemplate = {
@@ -74,3 +75,15 @@ export const landGroup = new MapImageLayer({
 
 export const taxlotLayer = landGroup.findSublayerById(1);
 // -------------- taxlots -----------------
+
+// -------------- graphics -----------------
+export const bufferGraphic = new Graphic({
+  symbol: new SimpleFillSymbol({
+    color: [173, 216, 230, 0.8],
+    outline: {
+      color: [255, 255, 255],
+      width: 1
+    }
+  })
+});
+// -------------- graphics -----------------
