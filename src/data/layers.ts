@@ -4,9 +4,11 @@ import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import Color from "@arcgis/core/Color";
+import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
 
 // -------------- surveys -----------------
-const surveyTemplate = {
+export const surveyTemplate = {
   title: "Survey {cs}",
   content: "<strong>PDF:</strong> <a href={image}>View</a> <br /> <strong>Prepared For:</strong> {prepared_for} <br /> <strong>Description:</strong> {identification} <br /> <strong>Year:</strong> {rec_y}",
 }
@@ -97,4 +99,17 @@ export const fillSymbol = {
     width: 1
   }
 };
+
+export const simpleFillSymbol = new SimpleFillSymbol({
+  color: new Color([153,193,241,0.4]),
+  outline: new SimpleLineSymbol({
+    cap: "round",
+    color: new Color([119,118,123,1]),
+    join: "round",
+    miterLimit: 1,
+    style: "solid",
+    width: 1
+  }),
+  style: "solid"
+});
 // -------------- graphics -----------------

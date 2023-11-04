@@ -7,7 +7,7 @@ import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
-import {bufferGraphic, surveyLayer, fillSymbol} from "@/data/layers";
+import {bufferGraphic, surveyLayer, simpleFillSymbol, surveyTemplate} from "@/data/layers";
 
 let view: MapView;
 let featureSetData: FeatureSet
@@ -115,7 +115,8 @@ export const useMappingStore = defineStore('mapping_store', {
           const graphic = new Graphic({
             geometry: survey.geometry,
             attributes: survey.attributes,
-            symbol: fillSymbol
+            symbol: simpleFillSymbol,
+            popupTemplate: surveyTemplate
           });
 
           view.graphics.add(graphic);
