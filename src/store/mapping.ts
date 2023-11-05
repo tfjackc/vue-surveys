@@ -23,18 +23,23 @@ export const useMappingStore = defineStore('mapping_store', {
     searchedValue: '' as string,
     filteredData: [] as any[],
     whereClause: '' as StringOrArray,
-    surveyLayerCheckbox: true
+    surveyLayerCheckbox: true,
+    searchedLayerCheckbox: false,
   }),
   getters: {
     getFeatures(state) {
-      return state.featureAttributes, state.searchCount, state.form, state.loading, state.searchedValue, state.filteredData, state.whereClause, state.surveyLayerCheckbox
+      return state.featureAttributes,
+        state.searchCount,
+        state.form,
+        state.loading,
+        state.searchedValue,
+        state.filteredData,
+        state.whereClause,
+        state.surveyLayerCheckbox,
+        state.searchedLayerCheckbox
     }
   },
   actions: {
-    // async onSubmit ()  {
-    //   console.log("on submit ran")
-    //   console.log(this.searchedValue)
-    // },
 
     async createMap(mapContainer: HTMLDivElement) {
       if (mapContainer) {
@@ -63,7 +68,8 @@ export const useMappingStore = defineStore('mapping_store', {
           featureSetData = await layer.queryFeatures(querySurveys);
         }
         else {
-          view.map.remove(layer)
+          surveyLayer.visible = false
+          this.surveyLayerCheckbox = false
           return layer.queryFeatures(querySurveys).then((fset: any) => {
             this.createGraphicLayer(fset);
           });
@@ -82,6 +88,7 @@ export const useMappingStore = defineStore('mapping_store', {
 
       this.whereClause = '';
       this.searchCount = 0;
+
       // Create a Fuse instance with your data and search options
       const fuse = new Fuse(this.featureAttributes, {
         keys: keys, // Fields to search in
@@ -102,7 +109,9 @@ export const useMappingStore = defineStore('mapping_store', {
         }
         this.whereClause += `OBJECTID = ${feature.OBJECTID}`;
       });
-
+      if (this.searchCount > 0) {
+        this.searchedLayerCheckbox = true;
+      }
       // Log the generated WHERE clause for debugging
       console.log('Generated WHERE clause:', this.whereClause);
     },
@@ -148,11 +157,16 @@ export const useMappingStore = defineStore('mapping_store', {
     },
 
     async surveyLayerCheck(e){
-      const isChecked = e.target.checked;
-      this.surveyLayerCheckbox = isChecked;
-      console.log(this.surveyLayerCheckbox);
+      this.surveyLayerCheckbox = e.target.checked;
+      surveyLayer.visible = this.surveyLayerCheckbox;
+    },
+
+    async searchedLayerCheck(e) {
+      this.searchedLayerCheckbox = e.target.checked;
+      // Loop through all graphics in the view.graphics layer and set their visibility
+      view.graphics.forEach(graphic => {
+        graphic.visible = this.searchedLayerCheckbox;
+      });
     }
-
-
   }
 });
