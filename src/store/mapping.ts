@@ -61,7 +61,7 @@ export const useMappingStore = defineStore('mapping_store', {
       querySurveys.where = this.whereClause;
       querySurveys.outFields = ["*"];
       querySurveys.returnQueryGeometry = true;
-      querySurveys.outSpatialReference = view.map.basemap.baseLayers.items[0].spatialReference;
+     // querySurveys.outSpatialReference = view.map.basemap.baseLayers.items[0].spatialReference;
 
       try {
         if (this.whereClause === "1=1") {
@@ -156,12 +156,12 @@ export const useMappingStore = defineStore('mapping_store', {
       // You can now use searchResults for further processing, like adding features to the map or updating the UI.
     },
 
-    async surveyLayerCheck(e){
+    async surveyLayerCheck(e: any){
       this.surveyLayerCheckbox = e.target.checked;
       surveyLayer.visible = this.surveyLayerCheckbox;
     },
 
-    async searchedLayerCheck(e) {
+    async searchedLayerCheck(e: any) {
       this.searchedLayerCheckbox = e.target.checked;
       // Loop through all graphics in the view.graphics layer and set their visibility
       view.graphics.forEach(graphic => {
