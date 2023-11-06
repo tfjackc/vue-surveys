@@ -15,7 +15,7 @@ type StringOrArray = string | string[];
 export const useMappingStore = defineStore('mapping_store', {
   state: () => ({
     featureAttributes: [] as any[],
-    //featureSetData: [] as any[],
+    filteredData: [] as any[],
     searchCount: 0 as number,
     form: false as boolean,
     loading: false as boolean,
@@ -29,6 +29,7 @@ export const useMappingStore = defineStore('mapping_store', {
   getters: {
     getFeatures(state) {
       return state.featureAttributes,
+             state.filteredData,
              state.searchCount,
              state.form,
              state.loading,
@@ -60,7 +61,7 @@ export const useMappingStore = defineStore('mapping_store', {
       const querySurveys = layer.createQuery();
       querySurveys.geometry = layer.geometry;
       querySurveys.where = this.whereClause;
-      querySurveys.outFields = ["*"];
+      querySurveys.outFields = ["cs","image","rec_y","prepared_for","trsqq","prepared_by","subdivision","type","identification","pp"];
       querySurveys.returnQueryGeometry = true;
      // querySurveys.outSpatialReference = view.map.basemap.baseLayers.items[0].spatialReference;
 
@@ -127,11 +128,8 @@ export const useMappingStore = defineStore('mapping_store', {
     },
 
     async createGraphicLayer(fset: any) {
-
       if (fset && fset.features) {
-        console.log(fset.features)
-        fset.features.forEach(function (survey: any) {
-
+        const promises = fset.features.map(async (survey: any) => {
           const graphic = new Graphic({
             geometry: survey.geometry,
             attributes: survey.attributes,
@@ -139,9 +137,18 @@ export const useMappingStore = defineStore('mapping_store', {
             popupTemplate: surveyTemplate
           });
 
+          console.log(survey.attributes);
           graphicsLayer.graphics.push(graphic);
-          view.map.add(graphicsLayer)
+          view.map.add(graphicsLayer);
+
+          return survey.attributes;
         });
+
+        // Use Promise.all to wait for all promises to resolve
+        const surveyAttributesArray = await Promise.all(promises);
+
+        // Add the survey attributes to the filteredData array
+        this.filteredData.push(...surveyAttributesArray);
 
         // Calculate the extent of all graphics
         const graphicsExtent = fset.features.reduce((extent: any, survey: any) => {
@@ -155,9 +162,11 @@ export const useMappingStore = defineStore('mapping_store', {
       } else {
         console.warn('No features found in the query result.');
       }
-    },
+    }
+    ,
 
     async onSubmit() {
+      this.filteredData = []
       graphicsLayer.graphics.removeAll()
       view.graphics.removeAll()
       this.displayResults()

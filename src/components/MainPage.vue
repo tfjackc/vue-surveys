@@ -17,6 +17,9 @@
                         <MapComponent />
                     </v-col>
                 </v-row>
+
+                <TableComponent />
+
             </v-container>
         </v-main>
     </v-app>
@@ -25,5 +28,6 @@
 import MapComponent from "@/components/MapComponent.vue";
 import LayerList from "@/components/LayerList.vue";
 import Search from "@/components/Search.vue";
+import TableComponent from "@/components/TableComponent.vue";
 </script>
 
