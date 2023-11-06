@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia';
 import { initialize } from "@/data/map";
 import MapView from '@arcgis/core/views/MapView';
-import Fuse from "fuse.js"; // Import the specific function from ArcGIS API
+import Fuse from "fuse.js";
 import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
 import Graphic from "@arcgis/core/Graphic";
 import { keys } from "@/data/keys";
 import { surveyLayer, graphicsLayer, simpleFillSymbol, surveyTemplate } from "@/data/layers";
 
-
 let view: MapView;
 let featureSetData: FeatureSet
 type StringOrArray = string | string[];
+
 
 export const useMappingStore = defineStore('mapping_store', {
   state: () => ({
@@ -23,6 +23,8 @@ export const useMappingStore = defineStore('mapping_store', {
     whereClause: '' as StringOrArray,
     surveyLayerCheckbox: true,
     searchedLayerCheckbox: false,
+    fuse_key: '' as string,
+    fuse_value: '' as string | number
   }),
   getters: {
     getFeatures(state) {
@@ -33,7 +35,9 @@ export const useMappingStore = defineStore('mapping_store', {
              state.searchedValue,
              state.whereClause,
              state.surveyLayerCheckbox,
-             state.searchedLayerCheckbox
+             state.searchedLayerCheckbox,
+             state.fuse_key,
+             state.fuse_value
     }
   },
   actions: {
@@ -77,13 +81,13 @@ export const useMappingStore = defineStore('mapping_store', {
     },
 
     async displayResults() {
-      // const fset = await this.featureSetData
       featureSetData.features.forEach(feature => {
         this.featureAttributes.push(feature.attributes);
       });
 
       this.whereClause = '';
       this.searchCount = 0;
+      const uniqueClauses = new Set(); // Use a Set to store unique clauses
 
       // Create a Fuse instance with your data and search options
       const fuse = new Fuse(this.featureAttributes, {
@@ -99,15 +103,25 @@ export const useMappingStore = defineStore('mapping_store', {
       // Build the WHERE clause with OR conditions
       searchResults.forEach((result, index) => {
         this.searchCount += 1;
-        const feature = result.item;
-        if (index > 0) {
-          this.whereClause += ' OR ';
-        }
-        this.whereClause += `OBJECTID = ${feature.OBJECTID}`;
+        const matches = result.matches; // Array of matches
+
+        matches.forEach(match => {
+          this.fuse_key = match.key; // Key that matched the search query
+          this.fuse_value = match.value; // Value that matched the search query
+          // You can use key and value as needed in your code
+          const clause = `${this.fuse_key} = '${this.fuse_value}'`;
+          // Add the clause to the uniqueClauses set
+          uniqueClauses.add(clause);
+        });
       });
+
+      // Convert the uniqueClauses set to an array and join them with "OR"
+      this.whereClause = Array.from(uniqueClauses).join(' OR ');
+
       if (this.searchCount > 0) {
         this.searchedLayerCheckbox = true;
       }
+
       // Log the generated WHERE clause for debugging
       console.log('Generated WHERE clause:', this.whereClause);
     },
@@ -136,7 +150,7 @@ export const useMappingStore = defineStore('mapping_store', {
         }, fset.features[0].geometry.extent);
 
         view.goTo(graphicsExtent).then(() => {
-          console.log("going to searched surveys");
+          console.log("view.GoTo Searched Surveys");
         });
       } else {
         console.warn('No features found in the query result.');
@@ -147,7 +161,10 @@ export const useMappingStore = defineStore('mapping_store', {
       graphicsLayer.graphics.removeAll()
       view.graphics.removeAll()
       this.displayResults()
-      this.queryLayer(surveyLayer);
+      if (this.whereClause.length > 0) {
+        this.queryLayer(surveyLayer);
+      }
+
     },
 
     async surveyLayerCheck(e: any){
