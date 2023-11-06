@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia';
-import MapView from '@arcgis/core/views/MapView';
 import { initialize } from "@/data/map";
+import MapView from '@arcgis/core/views/MapView';
 import Fuse from "fuse.js"; // Import the specific function from ArcGIS API
-import { keys } from "@/data/keys";
 import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
-import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Graphic from "@arcgis/core/Graphic";
-import Layer from "@arcgis/core/layers/Layer";
-import {bufferGraphic, surveyLayer, simpleFillSymbol, surveyTemplate} from "@/data/layers";
+import { keys } from "@/data/keys";
+import { surveyLayer, simpleFillSymbol, surveyTemplate } from "@/data/layers";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 
 let view: MapView;
 let featureSetData: FeatureSet
@@ -21,7 +20,6 @@ export const useMappingStore = defineStore('mapping_store', {
     form: false as boolean,
     loading: false as boolean,
     searchedValue: '' as string,
-    filteredData: [] as any[],
     whereClause: '' as StringOrArray,
     surveyLayerCheckbox: true,
     searchedLayerCheckbox: false,
@@ -29,14 +27,13 @@ export const useMappingStore = defineStore('mapping_store', {
   getters: {
     getFeatures(state) {
       return state.featureAttributes,
-        state.searchCount,
-        state.form,
-        state.loading,
-        state.searchedValue,
-        state.filteredData,
-        state.whereClause,
-        state.surveyLayerCheckbox,
-        state.searchedLayerCheckbox
+             state.searchCount,
+             state.form,
+             state.loading,
+             state.searchedValue,
+             state.whereClause,
+             state.surveyLayerCheckbox,
+             state.searchedLayerCheckbox
     }
   },
   actions: {
@@ -81,7 +78,6 @@ export const useMappingStore = defineStore('mapping_store', {
 
     async displayResults() {
       // const fset = await this.featureSetData
-
       featureSetData.features.forEach(feature => {
         this.featureAttributes.push(feature.attributes);
       });
@@ -118,11 +114,12 @@ export const useMappingStore = defineStore('mapping_store', {
 
     async createGraphicLayer(fset: any) {
 
+      const layer = new GraphicsLayer({});
+
       if (fset && fset.features) {
-
         console.log(fset.features)
-
         fset.features.forEach(function (survey: any) {
+
           const graphic = new Graphic({
             geometry: survey.geometry,
             attributes: survey.attributes,
@@ -130,7 +127,8 @@ export const useMappingStore = defineStore('mapping_store', {
             popupTemplate: surveyTemplate
           });
 
-          view.graphics.push(graphic);
+          layer.graphics.push(graphic);
+          view.map.add(layer)
         });
 
         // Calculate the extent of all graphics
@@ -148,12 +146,9 @@ export const useMappingStore = defineStore('mapping_store', {
     },
 
     async onSubmit() {
-     // console.log(this.featureSetData)
-      //console.log(this.searchedValue);
       view.graphics.removeAll()
       this.displayResults()
       this.queryLayer(surveyLayer);
-      // You can now use searchResults for further processing, like adding features to the map or updating the UI.
     },
 
     async surveyLayerCheck(e: any){
@@ -163,7 +158,6 @@ export const useMappingStore = defineStore('mapping_store', {
 
     async searchedLayerCheck(e: any) {
       this.searchedLayerCheckbox = e.target.checked;
-      // Loop through all graphics in the view.graphics layer and set their visibility
       view.graphics.forEach(graphic => {
         graphic.visible = this.searchedLayerCheckbox;
       });

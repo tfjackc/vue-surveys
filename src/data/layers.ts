@@ -3,7 +3,6 @@ import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Graphic from "@arcgis/core/Graphic";
-import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Color from "@arcgis/core/Color";
 import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
 
@@ -16,7 +15,8 @@ export const surveyTemplate = {
 export const surveyLayer = new FeatureLayer ({
   url: "https://geo.co.crook.or.us/server/rest/services/surveyor/surveys/MapServer/0",
   popupTemplate: surveyTemplate,
-  outFields:["*"]
+  outFields:["*"],
+  definitionExpression: "cs NOT IN ('2787','2424','1391','4188')"
 });
 // -------------- surveys -----------------
 
@@ -90,15 +90,15 @@ export const bufferGraphic = new Graphic({
   })
 });
 
-export const fillSymbol = {
-  type: "simple-fill", // autocasts as new SimpleFillSymbol()
-  color: [227, 139, 79, 0.8],
-  outline: {
-    // autocasts as new SimpleLineSymbol()
-    color: [255, 255, 255],
-    width: 1
-  }
-};
+// export const fillSymbol = {
+//   type: "simple-fill", // autocasts as new SimpleFillSymbol()
+//   color: [227, 139, 79, 0.8],
+//   outline: {
+//     // autocasts as new SimpleLineSymbol()
+//     color: [255, 255, 255],
+//     width: 1
+//   }
+// };
 
 export const simpleFillSymbol = new SimpleFillSymbol({
   color: new Color([153,193,241,0.4]),
@@ -110,6 +110,6 @@ export const simpleFillSymbol = new SimpleFillSymbol({
     style: "solid",
     width: 1
   }),
-  style: "solid"
+  style: "solid",
 });
 // -------------- graphics -----------------
