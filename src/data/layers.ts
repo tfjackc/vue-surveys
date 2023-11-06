@@ -5,6 +5,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Graphic from "@arcgis/core/Graphic";
 import Color from "@arcgis/core/Color";
 import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 
 // -------------- surveys -----------------
 export const surveyTemplate = {
@@ -15,7 +16,7 @@ export const surveyTemplate = {
 export const surveyLayer = new FeatureLayer ({
   url: "https://geo.co.crook.or.us/server/rest/services/surveyor/surveys/MapServer/0",
   popupTemplate: surveyTemplate,
-  outFields:["*"],
+  outFields:["cs","image","rec_y","prepared_for","trsqq","prepared_by","subdivision","type","identification","pp"],
   definitionExpression: "cs NOT IN ('2787','2424','1391','4188')"
 });
 // -------------- surveys -----------------
@@ -80,6 +81,7 @@ export const taxlotLayer = landGroup.findSublayerById(1);
 // -------------- taxlots -----------------
 
 // -------------- graphics -----------------
+export const graphicsLayer = new GraphicsLayer({});
 export const bufferGraphic = new Graphic({
   symbol: new SimpleFillSymbol({
     color: [173, 216, 230, 0.8],

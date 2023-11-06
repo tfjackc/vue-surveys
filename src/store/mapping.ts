@@ -5,8 +5,8 @@ import Fuse from "fuse.js"; // Import the specific function from ArcGIS API
 import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
 import Graphic from "@arcgis/core/Graphic";
 import { keys } from "@/data/keys";
-import { surveyLayer, simpleFillSymbol, surveyTemplate } from "@/data/layers";
-import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import { surveyLayer, graphicsLayer, simpleFillSymbol, surveyTemplate } from "@/data/layers";
+
 
 let view: MapView;
 let featureSetData: FeatureSet
@@ -114,8 +114,6 @@ export const useMappingStore = defineStore('mapping_store', {
 
     async createGraphicLayer(fset: any) {
 
-      const layer = new GraphicsLayer({});
-
       if (fset && fset.features) {
         console.log(fset.features)
         fset.features.forEach(function (survey: any) {
@@ -127,8 +125,8 @@ export const useMappingStore = defineStore('mapping_store', {
             popupTemplate: surveyTemplate
           });
 
-          layer.graphics.push(graphic);
-          view.map.add(layer)
+          graphicsLayer.graphics.push(graphic);
+          view.map.add(graphicsLayer)
         });
 
         // Calculate the extent of all graphics
@@ -146,6 +144,7 @@ export const useMappingStore = defineStore('mapping_store', {
     },
 
     async onSubmit() {
+      graphicsLayer.graphics.removeAll()
       view.graphics.removeAll()
       this.displayResults()
       this.queryLayer(surveyLayer);
@@ -158,9 +157,7 @@ export const useMappingStore = defineStore('mapping_store', {
 
     async searchedLayerCheck(e: any) {
       this.searchedLayerCheckbox = e.target.checked;
-      view.graphics.forEach(graphic => {
-        graphic.visible = this.searchedLayerCheckbox;
-      });
+      graphicsLayer.visible = this.searchedLayerCheckbox;
     }
   }
 });
