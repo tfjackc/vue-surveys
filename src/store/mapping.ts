@@ -137,7 +137,6 @@ export const useMappingStore = defineStore('mapping_store', {
             popupTemplate: surveyTemplate
           });
 
-          console.log(survey.attributes);
           graphicsLayer.graphics.push(graphic);
           view.map.add(graphicsLayer);
 

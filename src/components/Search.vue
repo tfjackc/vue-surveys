@@ -1,7 +1,7 @@
 <template>
-    <v-list-item>
-      <v-select label="Filter Search Criteria" :items="selection_criteria" variant="solo-filled"></v-select>
-    </v-list-item>
+<!--    <v-list-item>-->
+<!--      <v-select label="Filter Search Criteria" :items="selection_criteria" variant="solo-filled"></v-select>-->
+<!--    </v-list-item>-->
     <v-list-item>
       <v-form v-model="form"
               @submit.prevent="mapping_store.onSubmit()">
