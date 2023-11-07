@@ -6,9 +6,8 @@
 import { onMounted, ref } from 'vue'
 import { useMappingStore } from "@/store/mapping";
 import { surveyLayer } from "@/data/layers";
-
-const mapDiv = ref<HTMLDivElement>()
 const app = useMappingStore()
+const mapDiv = ref<HTMLDivElement>()
 
 onMounted(async() => {
   await app.createMap(mapDiv.value!)

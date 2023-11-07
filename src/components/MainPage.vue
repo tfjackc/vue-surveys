@@ -1,7 +1,7 @@
 <template>
     <v-app id="inspire">
         <v-main class="bg-shades-dark-gray">
-                <v-row>
+                <v-row :class="{ 'isData' : dataLoaded, 'noData' : !dataLoaded }">
                     <v-col cols="4">
                         <v-sheet rounded="lg">
                             <v-divider class="my-2"></v-divider>
@@ -16,9 +16,11 @@
                         <MapComponent />
                     </v-col>
                 </v-row>
-          <v-expansion-panels v-if="filteredData.length > 0" flat height="92">
+          <v-expansion-panels
+            v-if="filteredData.length > 0"
+            v-model="panel">
             <v-expansion-panel title="Data Table">
-              <v-expansion-panel-text>
+              <v-expansion-panel-text >
                 <TableComponent />
               </v-expansion-panel-text>
             </v-expansion-panel>
@@ -33,7 +35,12 @@ import Search from "@/components/Search.vue";
 import TableComponent from "@/components/TableComponent.vue";
 import { useMappingStore } from "@/store/mapping";
 import {storeToRefs} from "pinia";
+import {ref} from "vue";
 const mapping_store = useMappingStore()
-const { filteredData } = storeToRefs(mapping_store)
+const { filteredData, dataLoaded } = storeToRefs(mapping_store)
+const panel = ref([0])
 </script>
+<style scoped>
+
+</style>
 

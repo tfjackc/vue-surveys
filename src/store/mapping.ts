@@ -24,7 +24,8 @@ export const useMappingStore = defineStore('mapping_store', {
     surveyLayerCheckbox: true,
     searchedLayerCheckbox: false,
     fuse_key: '' as string,
-    fuse_value: '' as string | number
+    fuse_value: '' as string | number,
+    dataLoaded: false as boolean
   }),
   getters: {
     getFeatures(state) {
@@ -38,7 +39,8 @@ export const useMappingStore = defineStore('mapping_store', {
              state.surveyLayerCheckbox,
              state.searchedLayerCheckbox,
              state.fuse_key,
-             state.fuse_value
+             state.fuse_value,
+             state.dataLoaded
     }
   },
   actions: {
@@ -85,6 +87,7 @@ export const useMappingStore = defineStore('mapping_store', {
         this.featureAttributes.push(feature.attributes);
       });
 
+      this.dataLoaded = false
       this.whereClause = '';
       this.searchCount = 0;
       const uniqueClauses = new Set(); // Use a Set to store unique clauses
@@ -118,6 +121,7 @@ export const useMappingStore = defineStore('mapping_store', {
       this.whereClause = Array.from(uniqueClauses).join(' OR ');
       if (this.searchCount > 0) {
         this.searchedLayerCheckbox = true;
+        this.dataLoaded = true
       }
       // Log the generated WHERE clause for debugging
       console.log('Generated WHERE clause:', this.whereClause);
