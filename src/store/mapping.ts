@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { initialize } from "@/data/map";
 import MapView from '@arcgis/core/views/MapView';
-import Fuse from "fuse.js";
+import Fuse, {FuseResultMatch} from "fuse.js";
 import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
 import Graphic from "@arcgis/core/Graphic";
 import { keys } from "@/data/keys";
@@ -102,11 +102,11 @@ export const useMappingStore = defineStore('mapping_store', {
       const searchResults = fuse.search(query);
 
       // Build the WHERE clause with OR conditions
-      searchResults.forEach((result, index) => {
+      searchResults.forEach((result) => {
         this.searchCount += 1;
-        const matches = result.matches; // Array of matches
+        const matches: FuseResultMatch[] | any = result.matches; // Array of matches
 
-        matches.forEach(match => {
+        matches.forEach((match: any) => {
           this.fuse_key = match.key; // Key that matched the search query
           this.fuse_value = match.value; // Value that matched the search query
           // You can use key and value as needed in your code
