@@ -7,7 +7,7 @@
     border: 1px solid black;
     margin-top: 7px;
 }
-.v-btn {
+.v-list-item .v-btn {
     width: 100%;
 }
 .v-data-table {
@@ -18,8 +18,18 @@
 }
 .v-app-bar {
     padding-left: 20px;
-    padding-right: 20px;
+    padding-right: 50px;
 }
 .tablediv {
     padding: 20px;
+}
+a.v-btn {
+    max-width: 300px;
+    margin-left: 50px;
+}
+.v-col.v-col-auto {
+    margin-right: 10px;
+}
+.v-card {
+    max-width: 1500px;
 }
