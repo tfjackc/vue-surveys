@@ -42,7 +42,6 @@ export const useMappingStore = defineStore('mapping_store', {
     }
   },
   actions: {
-
     async createMap(mapContainer: HTMLDivElement) {
       if (mapContainer) {
         view = await initialize(mapContainer);
@@ -110,20 +109,18 @@ export const useMappingStore = defineStore('mapping_store', {
           this.fuse_key = match.key; // Key that matched the search query
           this.fuse_value = match.value; // Value that matched the search query
           // You can use key and value as needed in your code
-          const clause = `${this.fuse_key} = '${this.fuse_value}'`;
+          const clause = `${this.fuse_key} LIKE '%${this.searchedValue}%'`;
           // Add the clause to the uniqueClauses set
           uniqueClauses.add(clause);
         });
       });
-
       // Convert the uniqueClauses set to an array and join them with "OR"
       this.whereClause = Array.from(uniqueClauses).join(' OR ');
-
       if (this.searchCount > 0) {
         this.searchedLayerCheckbox = true;
       }
       // Log the generated WHERE clause for debugging
-      // console.log('Generated WHERE clause:', this.whereClause);
+      console.log('Generated WHERE clause:', this.whereClause);
     },
 
     async createGraphicLayer(fset: any) {
@@ -141,13 +138,10 @@ export const useMappingStore = defineStore('mapping_store', {
 
           return survey.attributes;
         });
-
         // Use Promise.all to wait for all promises to resolve
         const surveyAttributesArray = await Promise.all(promises);
-
         // Add the survey attributes to the filteredData array
         this.filteredData.push(...surveyAttributesArray);
-
         // Calculate the extent of all graphics
         const graphicsExtent = fset.features.reduce((extent: any, survey: any) => {
           extent.union(survey.geometry.extent);
@@ -160,8 +154,7 @@ export const useMappingStore = defineStore('mapping_store', {
       } else {
         console.warn('No features found in the query result.');
       }
-    }
-    ,
+    },
 
     async onSubmit() {
       this.filteredData = []
@@ -171,7 +164,6 @@ export const useMappingStore = defineStore('mapping_store', {
       if (this.whereClause.length > 0) {
         this.queryLayer(surveyLayer);
       }
-
     },
 
     async surveyLayerCheck(e: any){
