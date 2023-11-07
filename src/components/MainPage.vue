@@ -1,7 +1,7 @@
 <template>
     <v-app id="inspire">
         <v-main class="bg-shades-dark-gray">
-            <v-container>
+
                 <v-row>
                     <v-col cols="4">
                         <v-sheet rounded="lg">
@@ -20,7 +20,7 @@
 
                 <TableComponent />
 
-            </v-container>
+
         </v-main>
     </v-app>
 </template>

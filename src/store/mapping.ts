@@ -122,9 +122,8 @@ export const useMappingStore = defineStore('mapping_store', {
       if (this.searchCount > 0) {
         this.searchedLayerCheckbox = true;
       }
-
       // Log the generated WHERE clause for debugging
-      console.log('Generated WHERE clause:', this.whereClause);
+      // console.log('Generated WHERE clause:', this.whereClause);
     },
 
     async createGraphicLayer(fset: any) {

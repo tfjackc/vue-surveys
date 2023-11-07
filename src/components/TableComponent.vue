@@ -1,5 +1,5 @@
 <template>
-
+  <div class="tablediv">
     <v-fade-transition>
       <v-data-table
         v-if="filteredData.length > 0"
@@ -14,7 +14,7 @@
     <div class="d-flex flex-wrap">
       <div v-for="surveys in filteredData" :key="surveys.id"></div>
     </div>
-
+  </div>
 </template>
 
 <script setup lang="ts">
