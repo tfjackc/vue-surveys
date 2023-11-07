@@ -8,12 +8,15 @@
         :headers="headers"
         class="elevation-10"
         :hover=true
+        item-key="cs"
       >
+        <template v-slot:[`item.image`]="{ value }">
+          <a :href="`${value}`">
+            {{ value }}
+          </a>
+        </template>
       </v-data-table>
     </v-fade-transition>
-    <div class="d-flex flex-wrap">
-      <div v-for="surveys in filteredData" :key="surveys.id"></div>
-    </div>
   </div>
 </template>
 
@@ -23,7 +26,7 @@ import {storeToRefs} from "pinia";
 const mapping_store = useMappingStore()
 const { filteredData } = storeToRefs(mapping_store)
 const itemsPerPage = 10
-const headers =
+const headers: [] | any =
   [
     {title: 'Survey', key: 'cs', align: 'center'},
     {title: 'TRS', key: 'trsqq', align: 'center'},

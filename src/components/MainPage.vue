@@ -1,7 +1,6 @@
 <template>
     <v-app id="inspire">
         <v-main class="bg-shades-dark-gray">
-
                 <v-row>
                     <v-col cols="4">
                         <v-sheet rounded="lg">
@@ -17,10 +16,7 @@
                         <MapComponent />
                     </v-col>
                 </v-row>
-
                 <TableComponent />
-
-
         </v-main>
     </v-app>
 </template>
