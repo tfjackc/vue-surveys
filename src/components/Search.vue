@@ -1,7 +1,7 @@
 <template>
-<!--    <v-list-item>-->
-<!--      <v-select label="Filter Search Criteria" :items="selection_criteria" variant="solo-filled"></v-select>-->
-<!--    </v-list-item>-->
+    <v-list-item>
+      <v-select label="Filter Search Criteria" :items="selection_criteria" variant="solo-filled"></v-select>
+    </v-list-item>
     <v-list-item>
       <v-form v-model="form"
               @submit.prevent="mapping_store.onSubmit()">
@@ -29,16 +29,17 @@
 <script setup lang="ts">
 import { useMappingStore } from "@/store/mapping";
 import { storeToRefs } from "pinia";
+import { ref } from "vue";
 const mapping_store = useMappingStore()
 const { form, loading, searchedValue } = storeToRefs(mapping_store)
-// const selection_criteria = ref([
-//   'Survey Numbers',
-//   'Partition Plats',
-//   'Township/Ranges',
-//   'Subdivisions',
-//   'Prepared For',
-//   'Prepared By'
-// ])
+const selection_criteria = ref([
+  'Survey Numbers',
+  'Partition Plats',
+  'Township/Ranges',
+  'Subdivisions',
+  'Prepared For',
+  'Prepared By'
+])
 
 function required (v: any) {
   return !!v || 'Field is required'
