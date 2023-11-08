@@ -39,3 +39,7 @@ a.v-btn {
 .isData {
     min-height: 0vh;
 }
+.v-expansion-panel {
+    position: absolute;
+    bottom: 0;
+}

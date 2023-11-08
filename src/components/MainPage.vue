@@ -18,7 +18,8 @@
                 </v-row>
           <v-expansion-panels
             v-if="filteredData.length > 0"
-            v-model="panel">
+            v-model="panel"
+            @click="exp_panel_click">
             <v-expansion-panel title="Data Table">
               <v-expansion-panel-text >
                 <TableComponent />
@@ -39,8 +40,15 @@ import {ref} from "vue";
 const mapping_store = useMappingStore()
 const { filteredData, dataLoaded } = storeToRefs(mapping_store)
 const panel = ref([0])
-</script>
-<style scoped>
 
-</style>
+function exp_panel_click(event: any) {
+  const parentNode = event.target.parentNode;
+    if (parentNode.getAttribute('aria-expanded') === 'false') {
+      mapping_store.dataLoaded = false
+    }
+    else {
+      mapping_store.dataLoaded = true
+    }
+}
+</script>
 
