@@ -1,4 +1,4 @@
-export const keys = [
+export const survey_keys = [
   "cs",
   "image",
   "rec_y",

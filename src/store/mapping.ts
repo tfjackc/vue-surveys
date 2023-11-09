@@ -4,7 +4,7 @@ import MapView from '@arcgis/core/views/MapView';
 import Fuse, {FuseResultMatch} from "fuse.js";
 import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
 import Graphic from "@arcgis/core/Graphic";
-import { keys } from "@/data/keys";
+import { survey_keys } from "@/data/keys";
 import { surveyLayer, graphicsLayer, simpleFillSymbol, surveyTemplate } from "@/data/layers";
 
 let view: MapView;
@@ -59,23 +59,30 @@ export const useMappingStore = defineStore('mapping_store', {
     },
 
     async queryLayer(layer: any) {
-      const querySurveys = layer.createQuery();
-      querySurveys.geometry = layer.geometry;
-      querySurveys.where = this.whereClause;
-      querySurveys.outFields = ["cs","image","rec_y","prepared_for","trsqq","prepared_by","subdivision","type","identification","pp"];
-      querySurveys.returnQueryGeometry = true;
-     // querySurveys.outSpatialReference = view.map.basemap.baseLayers.items[0].spatialReference;
 
+      const queryLayer = layer.createQuery();
+      queryLayer.geometry = layer.geometry;
+      queryLayer.where = this.whereClause;
+      if (layer.title === 'Surveys') {
+        queryLayer.outFields = ["cs","image","rec_y","prepared_for","trsqq","prepared_by","subdivision","type","identification","pp"];
+      }
+      // else if (layer.title === 'Taxlots') {
+      //   queryLayer.outFields = ["MAPTAXLOT", "SITUS_ADDRESS"]
+      // }
+      queryLayer.returnQueryGeometry = true;
+     // querySurveys.outSpatialReference = view.map.basemap.baseLayers.items[0].spatialReference;
       try {
         if (this.whereClause === "1=1") {
-          featureSetData = await layer.queryFeatures(querySurveys);
+          featureSetData = await layer.queryFeatures(queryLayer);
         }
         else {
-          surveyLayer.visible = false
-          this.surveyLayerCheckbox = false
-          return layer.queryFeatures(querySurveys).then((fset: any) => {
-            this.createGraphicLayer(fset);
-          });
+          if (layer.title === 'Surveys') {
+            surveyLayer.visible = false
+            this.surveyLayerCheckbox = false
+            return layer.queryFeatures(queryLayer).then((fset: any) => {
+              this.createGraphicLayer(fset);
+            });
+          }
         }
       } catch (error) {
         console.error("Error querying features:", error);
@@ -94,7 +101,7 @@ export const useMappingStore = defineStore('mapping_store', {
 
       // Create a Fuse instance with your data and search options
       const fuse = new Fuse(this.featureAttributes, {
-        keys: keys, // Fields to search in
+        keys: survey_keys, // Fields to search in
         includeMatches: true, // Include match information
         threshold: 0.0, // Adjust the threshold as needed
       });
